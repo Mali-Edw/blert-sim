@@ -16,6 +16,8 @@ class Player {
         this.specBar = 100;
     }
 }
+
+
 const player1 = new Player;
 const player2 = new Player;
 const player3 = new Player;
@@ -34,16 +36,16 @@ const accuracy = (attackRoll, DefenseRoll) => {
 };
 
 //damage formulas
-const scySwing = (acc, def, max, size = 3) => {
+const scySwing = (acc, max, size = 3) => {
   let damage = 0;
-  if (Math.floor(Math.random() * (acc + 1)) > Math.floor(Math.random() * def)) {
+  if (Math.random() <= acc) {
     damage += Math.floor(Math.random() * (max[0] + 1));
   }
-  if (Math.floor(Math.random() * (acc + 1)) > Math.floor(Math.random() * def)) {
+  if (Math.random() <= acc) {
     damage += Math.floor(Math.random() * (max[1] + 1));
   }
   if (
-    Math.floor(Math.random() * (acc + 1)) > Math.floor(Math.random() * def) &&
+    Math.random() <= acc &&
     size > 2
   ) {
     damage += Math.floor(Math.random() * (max[2] + 1));
@@ -51,25 +53,22 @@ const scySwing = (acc, def, max, size = 3) => {
   return damage;
 };
 
-const challySpec = (acc, def, max) => {
+const challySpec = (acc, max) => {
   let damage = 0;
   const secondAcc = acc * 0.75;
-  if (Math.floor(Math.random() * (acc + 1)) > Math.floor(Math.random() * def)) {
+  if (Math.random() <= acc) {
     damage += Math.floor(Math.random() * (max + 1));
   }
-  if (
-    Math.floor(Math.random() * (secondAcc + 1)) >
-    Math.floor(Math.random() * def)
-  ) {
+  if (Math.random() <= secondAcc) {
     damage += Math.floor(Math.random() * (max + 1));
   }
   return damage;
 };
 
-const clawSpec = (acc, def, max) => {
+const clawSpec = (acc, max) => {
   let damage = 0;
   //first roll
-  if (Math.floor(Math.random() * (acc + 1)) > Math.floor(Math.random() * def)) {
+  if (Math.random() <= acc) {
     let newMax = max - 1;
     const hit = Math.floor(
       Math.random() * (newMax - Math.floor(max / 2) + 1) + Math.floor(max / 2)
@@ -82,7 +81,7 @@ const clawSpec = (acc, def, max) => {
   //second roll
   else if (
     damage === 0 &&
-    Math.floor(Math.random() * (acc + 1)) > Math.floor(Math.random() * def)
+    Math.random() <= acc
   ) {
     const hit = Math.floor(
       Math.random() *
@@ -96,7 +95,7 @@ const clawSpec = (acc, def, max) => {
   //third roll
   else if (
     damage === 0 &&
-    Math.floor(Math.random() * (acc + 1)) > Math.floor(Math.random() * def)
+    Math.random() <= acc
   ) {
     const hit = Math.floor(
       Math.random() *
@@ -109,7 +108,7 @@ const clawSpec = (acc, def, max) => {
   //fourth roll
   else if (
     damage === 0 &&
-    Math.floor(Math.random() * (acc + 1)) > Math.floor(Math.random() * def)
+    Math.random() <= acc
   ) {
     const hit = Math.floor(
       Math.random() *
@@ -125,9 +124,9 @@ const clawSpec = (acc, def, max) => {
   return damage;
 };
 
-const bgsSpec = (acc, def, max) => {
+const bgsSpec = (acc, max) => {
   let damage = 0;
-  if (Math.floor(Math.random() * (acc + 1)) > Math.floor(Math.random() * def)) {
+  if (Math.random() <= acc) {
     damage += (Math.floor(Math.random() * (max + 1)));
   }
   return damage;
@@ -136,22 +135,22 @@ const bgsSpec = (acc, def, max) => {
 //half damage formula
 const halfDamage = (damage) => Math.floor(damage / 2);
 
-const halfScy = (acc, def, max, size = 3) => {
+const halfScy = (acc, max, size = 3) => {
     let first = 0;
     let second = 0;
     let third = 0;
     if (
-      Math.floor(Math.random() * (acc + 1)) > Math.floor(Math.random() * def)
+     Math.random() <= acc
     ) {
       first += Math.floor(Math.random() * (max[0] + 1));
     }
     if (
-      Math.floor(Math.random() * (acc + 1)) > Math.floor(Math.random() * def)
+      Math.random() <= acc
     ) {
       second += Math.floor(Math.random() * (max[1] + 1));
     }
     if (
-      Math.floor(Math.random() * (acc + 1)) > Math.floor(Math.random() * def) &&
+      Math.random() <= acc &&
       size > 2
     ) {
       third += Math.floor(Math.random() * (max[2] + 1));
@@ -220,8 +219,7 @@ function bloat() {
         //player1
         if (roomTimer === 2) { //first bgs
             let bgs = bgsSpec(
-                player1.bgsRoll,
-                bloatRoll,
+                accuracy(player1.bgsRoll, bloatRoll),
                 player1.bgsMax);
             bloatHP -= halfDamage(bgs);
             bloatDef -= bgs;
@@ -232,8 +230,7 @@ function bloat() {
         if (roomTimer === 8) { //hit from backside
             if (bloatDef >= 30) {
                 let bgs = bgsSpec(
-                    player1.bgsRoll,
-                    bloatRoll,
+                    accuracy(player1.bgsRoll, bloatRoll),
                     player1.bgsMax);
                 bloatHP -= halfDamage(bgs);
                 bloatDef -= bgs;
@@ -245,8 +242,7 @@ function bloat() {
             }
             else {
                 bloatHP -= halfScy(
-                    player1.scySalveRoll,
-                    bloatRoll,
+                    accuracy(player1.scySalveRoll, bloatRoll),
                     player1.scySalveMax
                 )
                 // console.log(`p1 salve scy - HP ${bloatHP} - DEF ${bloatDef} ${player1.tick}`)
@@ -256,8 +252,7 @@ function bloat() {
         //player2 humid
         if (roomTimer === 7) {
             let bgs = bgsSpec(
-                player2.bgsRoll,
-                bloatRoll,
+                accuracy(player2.bgsRoll,bloatRoll),
                 player2.bgsMax);
             bloatHP -= halfDamage(bgs);
             bloatDef -= bgs;
@@ -272,8 +267,7 @@ function bloat() {
         //player3 humid
         if (roomTimer === 7) {
             let bgs = bgsSpec(
-                player3.bgsRoll,
-                bloatRoll,
+                accuracy(player3.bgsRoll, bloatRoll),
                 player3.bgsMax);
           bloatHP -= halfDamage(bgs);
           bloatDef -= bgs;
@@ -289,24 +283,24 @@ function bloat() {
             if (player.tick === roomTimer) {
                 if (player.humid) { //is humidify player
                     if (salveHumid) { //is humid salve flicking
-                        bloatHP -= halfScy(player.scySalveRoll, bloatRoll, player.scySalveMax);
+                        bloatHP -= halfScy(accuracy(player.scySalveRoll, bloatRoll), player.scySalveMax);
                         player.tick += 5;
                         // console.log(`humid salve scy - HP ${bloatHP} on tick ${roomTimer}`)
                     }
                     else { //is not humid salve flicking
-                        bloatHP -= halfScy(player.scyPneckRoll, bloatRoll, player.scyPneckMax);
+                        bloatHP -= halfScy(accuracy(player.scyPneckRoll, bloatRoll), player.scyPneckMax);
                         player.tick += 5;
                         // console.log(`humid pneck scy - HP ${bloatHP} on tick ${roomTimer}`);
                     }
                 }
                 else { //is not humidify player
                     if (Math.random() < .2) { //salve flick 20% of scy swings
-                        bloatHP -= halfScy(player.scySalveRoll, bloatRoll, player.scySalveMax);
+                        bloatHP -= halfScy(accuracy(player.scySalveRoll, bloatRoll), player.scySalveMax);
                         player.tick += 5;
                         // console.log(`non-humid salve scy - HP ${bloatHP} on tick ${roomTimer}`);
                     }
                     else { //did not salve flick
-                        bloatHP -= halfScy(player.scyPneckRoll, bloatRoll, player.scyPneckMax);
+                        bloatHP -= halfScy(accuracy(player.scyPneckRoll), bloatRoll, player.scyPneckMax);
                         player.tick += 5;
                         // console.log(`non-humid pneck scy - HP ${bloatHP} on tick ${roomTimer}`);
                     }
@@ -328,13 +322,13 @@ function bloat() {
             team.forEach((player) => {
                 if (player.tick === roomTimer) {
                     if (downTimer <= 15 && player.specBar >= 50) { //claws
-                        bloatHP -= clawSpec(player.clawRoll, bloatDef, player.clawMax)
+                        bloatHP -= clawSpec(accuracy(player.clawRoll, bloatRoll), player.clawMax)
                         player.tick += 4
                         player.specBar -= 50;
                         // console.log(`claw spec on ${downTimer} - HP ${bloatHP} - DEF ${bloatDef}`);
                     }
                     else {
-                        bloatHP -= scySwing(player.scySalveRoll, bloatDef, player.scySalveMax)
+                        bloatHP -= scySwing(accuracy(player.scySalveRoll, bloatRoll), player.scySalveMax)
                         player.tick += 5
                         // console.log(`scy swing on ${downTimer} - HP ${bloatHP} - DEF ${bloatDef}`)
                     }

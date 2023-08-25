@@ -300,7 +300,7 @@ function bloat() {
                         // console.log(`non-humid salve scy - HP ${bloatHP} on tick ${roomTimer}`);
                     }
                     else { //did not salve flick
-                        bloatHP -= halfScy(accuracy(player.scyPneckRoll), bloatRoll, player.scyPneckMax);
+                        bloatHP -= halfScy(accuracy(player.scyPneckRoll, bloatRoll), player.scyPneckMax);
                         player.tick += 5;
                         // console.log(`non-humid pneck scy - HP ${bloatHP} on tick ${roomTimer}`);
                     }
